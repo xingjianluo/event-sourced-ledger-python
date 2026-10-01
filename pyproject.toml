@@ -1,11 +1,30 @@
 [project]
 name = "event-sourced-ledger-python"
 version = "0.1.0"
+description = "多租户事件溯源账本：复式记账、幂等转账、可回放事件日志（本地文件存储）"
 requires-python = ">=3.14.4"
 dependencies = [
     "fastapi[standard]>=0.141.1",
 ]
 
-[[tool.uv.index]]
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.0",
+    "httpx>=0.28.0",
+]
+
+[tool.uv.index]
 url = "https://mirrors.aliyun.com/pypi/simple/"
 default = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+# 单测实时打印账本日志：包含 X-Request-Id 与关键账目流水（分录/事件序号/余额）
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(levelname)s %(name)s %(message)s"
+log_format = "%(asctime)s %(levelname)s %(name)s %(message)s"
+
+[project.scripts]
+ledger-server = "main:app"
